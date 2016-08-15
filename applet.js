@@ -86,7 +86,7 @@ MyApplet.prototype = {
             if(sensors_output[0]) tempInfo = this._findTemperatureFromSensorsOutput(sensors_output[1].toString());//get temperature from sensors
             
             if (tempInfo){
-                var s=0, n=0;//sum and count
+                var s=0, n=0, maxtemp=0;//sum, count and maximum
                 for (let adapter in tempInfo){
                     if(adapter!=0){
                         //ISA Adapters
@@ -95,6 +95,11 @@ MyApplet.prototype = {
                                 items.push("ISA Adapter "+cpu+": ");
                                 for (let core in tempInfo[adapter][cpu]){
                                     s+=tempInfo[adapter][cpu][core]['temp'];
+                                    
+                                    if (tempInfo[adapter][cpu][core]['temp'] > maxtemp){
+                                    	maxtemp = tempInfo[adapter][cpu][core]['temp'];
+                                    }
+
                                     n++;
                                     items.push(core+' : '+this._formatTemp(tempInfo[adapter][cpu][core]['temp']));
                                 }
@@ -110,7 +115,7 @@ MyApplet.prototype = {
                 
                 
                 if (n!=0){//if temperature is detected
-                    this.title=this._formatTemp(s/n);//set title as average
+                    this.title=this._formatTemp(maxtemp);//set title as maximum
                 }
             }
         }
